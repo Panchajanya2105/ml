@@ -152,3 +152,12 @@ name:Maven-CI or Gradle-CI
 Select “pipeline”
 Click OK
 scroll to the “Pipeline”->Pipeline script->choose try sample code ->save->build->build now-> console output
+
+
+
+
+sudo apt install jenkins
+sudo update-alternatives --config java
+ sudo lsof -i :8080
+ sudo systemctl start jenkins
+ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
