@@ -1,618 +1,199 @@
-Open command prompt in “Run as Adminstrator” mode
-
+Open CMD in “Run as Adminstrator” mode
 java –version
-
 hadoop version
-
-Start the data node and name node: start-dfs.cmd
-
-Start resource manager : start-yarn.cmd
-
+start-dfs.cmd(Start the data node and name node)
+start-yarn.cmd(Start resource manager)
 Type jps
 
-
-
-To Create a directory in HDFS at given path(s).
-
-Usage: hadoop fs -mkdir <paths>
-
+Create a directory 
+CMD:- hadoop fs -mkdir <paths>
 Example: hadoop fs –mkdir /user1
 
-
-
 To get list of directories and files at the root of HDFS
-
 CMD:-Hadoop fs –ls /
 
-
-
 To get list of complete directories and files of HDFS
-
 CMD:-Hadoop fs –ls R /
 
-
-
 To get List the contents of a directory.
-
 CMD:-hadoop fs -ls <args>
-
 Example:hadoop fs –ls /user1
 
-
-
 Upload a file/files in HDFS.
-
 CMD:-hadoop fs -put <localsrc> ... <HDFS_dest_Path>
-
 Example: hadoop fs -put /home/saurzcode/Samplefile.txt /user/saurzcode/dir3/
 
-
-
 Download file/files:
-
 CMD:-hadoop fs -get <hdfs_src> <localdst>
-
 Example:hadoop fs –get /user1/Hadoop E:\BGS
 
-
-
 To copy a file from HDFS to local file system
-
 CMD:-hadoop fs –get /user1/Hadoop/model_QP1.pdf E:\BGS
 
-
-
 See contents of a file
-
 CMD:-hadoop fs -cat <path[filename]>
-
 Example:hadoop fs -cat /user/saurzcode/dir1/abc.txt
 
-
-
 Remove a file or directory in HDFS.
-
 CMD:-hadoop fs -rm <arg>
-
 Example:hadoop fs -rm /user/saurzcode/dir1/abc.txt
 
 
-
-
-
-
-
-
-
-// Importing libraries
-
 import java.io.IOException;
-
 import org.apache.hadoop.io.IntWritable;
-
 import org.apache.hadoop.io.LongWritable;
-
 import org.apache.hadoop.io.Text;
-
 import org.apache.hadoop.mapred.MapReduceBase;
-
 import org.apache.hadoop.mapred.Mapper;
-
 import org.apache.hadoop.mapred.OutputCollector;
-
 import org.apache.hadoop.mapred.Reporter;
-
 public class WCMapper extends MapReduceBase implements Mapper<LongWritable,
-
  Text, Text, IntWritable> {
-
- // Map function
-
  public void map(LongWritable key, Text value, OutputCollector<Text,
-
  IntWritable> output, Reporter rep) throws IOException
-
  {
-
  String line = value.toString();
-
- // Splitting the line on spaces
-
  for (String word : line.split(" "))
-
  {
-
  if (word.length() > 0)
-
  {
-
  output.collect(new Text(word), new IntWritable(1));
-
  }
-
  }
-
  }
-
 }
 
-Driver Code: You have to copy paste this program into the WCDriver Java Class file.
-
-// Importing libraries
-
+Driver Code: 
 import java.io.IOException;
-
 import org.apache.hadoop.conf.Configured;
-
 import org.apache.hadoop.fs.Path;
-
 import org.apache.hadoop.io.IntWritable;
-
 import org.apache.hadoop.io.Text;
-
 import org.apache.hadoop.mapred.FileInputFormat;
-
 import org.apache.hadoop.mapred.FileOutputFormat;
-
 import org.apache.hadoop.mapred.JobClient;
-
 import org.apache.hadoop.mapred.JobConf;
-
 import org.apache.hadoop.util.Tool;
-
 import org.apache.hadoop.util.ToolRunner;
-
 public class WCDriver extends Configured implements Tool {
-
  public int run(String args[]) throws IOException
-
  {
-
  if (args.length < 2)
-
  {
-
  System.out.println("Please give valid inputs");
-
  return -1;
-
  }
-
  JobConf conf = new JobConf(WCDriver.class);
-
  FileInputFormat.setInputPaths(conf, new Path(args[0]));
-
  FileOutputFormat.setOutputPath(conf, new Path(args[1]));
-
  conf.setMapperClass(WCMapper.class);
-
  conf.setReducerClass(WCReducer.class);
-
  conf.setMapOutputKeyClass(Text.class);
-
  conf.setMapOutputValueClass(IntWritable.class);
-
  conf.setOutputKeyClass(Text.class);
-
  conf.setOutputValueClass(IntWritable.class);
-
  JobClient.runJob(conf);
-
  return 0;
-
  }
-
- // Main Method
-
   public static void main(String args[]) throws Exception
-
  {
-
  int exitCode = ToolRunner.run(new WCDriver(), args);
-
  System.out.println(exitCode);
-
  }
-
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-db.Students.update({_id: 3}, {$set: {Location: null}});
-
-db.Students.update({_id: 4}, {$set: {Location: null}});
-
-
-
-Searching for NULL Values
-
-To find documents where Location is NULL or does not exist:
-
-db.Students.find({Location: {$eq: null}});
-
-
-
-Removing Fields with NULL Values
-
-To remove the Location field where it's NULL:
-
-db.Students.update({_id: 3}, {$unset: {Location: null}});
-
-db.Students.update({_id: 4}, {$unset: {Location: null}});
-
-
-
-Step 5: Confirming the Change
-
-To verify that the fields have been removed:
-
+Null: db.Students.update({_id: 3}, {$set: {Location: null}});
+Searching for NULL Values: db.Students.find({Location: {$eq: null}});
+Removing Fields with NULL Values: db.Students.update({_id: 3}, {$unset: {Location: null}});
 db.Students.find()
 
-
-
-Case 27: Count, Limit, Sort, and Skip
-
-To find the number of documents in the Students collection.
-
+Count, Limit, Sort, and Skip
 db.Students.count()
-
-
-
-To find the number of documents in the Students collection wherein the Grade is VII.
-
 db.Students.count({Grade:"VII"});
 
+To retrieve the first 3 documents from the Students collection wherein the Grade is VII. db.Students.find({Grade:"VII"}).limit(3).pretty();
 
+Sort in asceneding : db.Students.find().sort({StudName:1}).pretty();
+Sort in descending : db.Students.find().sort({StudName:-1}).pretty();
 
-To retrieve the first 3 documents from the Students collection wherein the Grade
+skip the first 2 documents: db.Students.find().skip (2).pretty();
 
-is VII.
-
-db.Students.find({Grade:"VII"}).limit(3).pretty();
-
-
-
-Case 28: Sort documents in asceneding order of StudName
-
-db.Students.find().sort({StudName:1}).pretty();
-
-
-
-Sort documents in descending order of StudName
-
-db.Students.find().sort({StudName:-1}).pretty();
-
-
-
-
-
-To sort the documents from the Students collection first on Grade in ascending order
-
-and then on Hobbies in ascending order.
-
-db.Students.find().sort((Grade:1, Hobbies:1}).pretty();
-
-
-
-To skip the first 2 documents from the Students collection.
-
-db.Students.find().skip (2).pretty();
-
-
-
-To sort the documents from the Students collection and skip the first document from
-
-the output.
-
+To sort the documents skip the first document from the output. 
 db.Students.find().skip (1).pretty().sort({StudName:1});
 
-
-
-To display the last 2 records from the Students collection.
-
-
-
+To display the last 2 records from the Students collection. 
 db.Students.find().pretty().skip(db.Students.count()-2);
-
-To retrieve the third, fourth, and fifth document from the Students collection.
-
-
-
-
-
 
 
 array:
-
-
-
 db.food.insert({_id:1,fruits:[ 'banana','apple', 'cherry' ] });
-
 db.food.insert({_id:2,fruits:[ 'orange','butterfruit','mango' ]});
-
 db.food.insert({_id:3,fruits:['pineapple', 'strawberry','grapes']}); 
-
 db.food.insert({_id:4,fruits:[ 'banana','strawberry','grapes']});
-
 db.food.insert((_id:5,fruits: [ 'orange','grapes']});
-
-
-
-
-
-
 
 db.food.find({fruits: ['banana','apple', 'cherry']}).pretty()
 
-
-
 To find those documents from the "food" collection which has the "fruits" array having "banana", as an element
-
 db.food.find({fruits:'banana'})
 
-
-
 To find those documents from the "food" collection which have the "fruits" array having "grapes"in the first index position. The index position begins at 0.
-
-db.food.find({'fruits. 1':'grapes'})
-
-
+db.food.find({'fruits.1':'grapes'})
 
 To find those documents from the "food" collection where "grapes" is present in the 2nd index
-
 position of the "fruits" array.
-
 db.food.find({'fruits.2':'grapes'})
 
-
-
-To find those documents from the "food" collection where the size of the array is two.
-
-The size implies that the array holds only 2 values.
-
+To find those documents from the "food" collection where the size of the array is two.The size implies that the array holds only 2 values.
 db.food.find({"fruits":{$size:2}})
 
-
-
-To find those documents from the "food" collection where the size of the array is three.The size implies that the array holds only 3 values.
-
-db.food.find({"fruits":{$size:3}})
-
-
-
-To find the document with (id: 1) from the "food" collection and
-
-display the first two elements from the array "fruits".
-
+To find the document with (id: 1) from the "food" collection and display the first two elements from the array "fruits".
 db.food.find({_id:1},{"fruits":{$slice:2}})
 
-
-
-To find all documents from the "food" collection which have elements "orange" and "grapes"
-
-in the array "fruits".
-
+To find all documents from the "food" collection which have elements "orange" and "grapes" in the array "fruits".
 db.food.find ((fruits: {$all: ["orange", "grapes"]}}).pretty ();
 
-
-
-To find those documents from the "food" collection which have the element "orange"
-
-in the 0th index position in the array "fruits".
-
-db.food.find({ "fruits.0" : "orange" }).pretty();
-
-
-
-To find the document with (id: 1) from the "food" collection and display two elements
-
-from the array "fruits", starting with the element at 0th index position.
-
+To find the document with (id: 1) from the "food" collection and display two elementsfrom the array "fruits", starting with the element at 0th index position.
 db.food.find({id:1},{"fruits": {$slice: [0,2]}})
 
-To find the document with (id: 1) from the "food" collection and display two elements from the array
-
-"fruits", starting with the element at 1" index position.
-
-db.food.find({_id:1},{"fruits": {$slice:[1,2]}})
-
-To find the document with (id: 1) from the "food" collection and display three
-
-elements from the array "fruits", starting with the element at 2nd index position. Since
-
-we have only 3 elements in the array "fruits" for the document with _id:1, it displays
-
-only one element, the element at 2nd index position, that is, "cherry".
-
-db.food.find({_id:1},{"fruits": {$slice: [2,3]}})
-
-Case 30: Update on the Array
-
-BCS714D| Big Data Lab
-
-To update the document with "_id:4" and replace the element present in the 1st
-
-index position of the "fruits" array with "apple".
-
+To update the document with "_id:4" and replace the element present in the 1st index position of the "fruits" array with "apple".
 db.food.update({_id:4}, {$set:{'fruits.1': 'apple'}})
 
-To update the document with "_id:4" and replace the element present in the 1st
-
-index position of the "fruits" array with "apple".
-
+To update the document with "_id:4" and replace the element present in the 1stindex position of the "fruits" array with "apple".
 db.food.update({_id:4}, {$set:{'fruits.1': 'apple'}})
 
-To update the document with "_id:1" and replace the element "apple" of the "fruits"
+To update the document with "_id:1" and replace the element "apple" of the "fruits"array with "An apple".
+ db.food.update({_id:1, 'fruits':'apple'}, {$set: {'fruits.$': 'An apple' }})
 
-array with "An apple".
-
-Act:
-
-db.food.update({_id:1, 'fruits':'apple'}, {$set: {'fruits.$': 'An apple' }})
-
-To update the document with "_id:2" and push new key value pairs in the "fruits"
-
-array.
-
-Act:
-
+To update the document with "_id:2" and push new key value pairs in the "fruits"array.
 db.food.update({_id:2},{$push:{price:{orange:60,butterfruit:200,mango: 120}}})
 
-To update the document with "_id:4" by adding an element "orange" to the list of
-
-elements in the array "fruits".
-
-Act:
-
+To update the document with "_id:4" by adding an element "orange" to the list of elements in the array "fruits".
 db.food.update({_id:4}, {$addToSet: {fruits:"orange"}});
 
-To update the document with "_id:4" by popping an element from the list of elements
-
-present in the array "fruits". The element popped is the one from the end of the array.
-
-Act:
-
+To update the document with "_id:4" by popping an element from the list of elementspresent in the array "fruits". The element popped is the one from the end of the array.
 db.food.update({_id:4},{$pop: {fruits:1}});
 
-To update the document with "_id:4" by popping an element from the list of elements
-
-present in the array "fruits". The element popped is the one from the beginning of the:
-
-Act:
-
+To update the document with "_id:4" by popping an element from the list of elements present in the array "fruits". The element popped is the one from the beginning of the:
 db.food.update({_id:4}, {$pop:{fruits:-1}});
 
-To update the document with "_id:3" by popping two elements from the list of elements
-
-present in the array "fruits". The elements popped are "pineapple" and "grapes".
-
-BCS714D| Big Data Lab
-
-The document with "_id:3" before the update is
-
-db.food.update({_id:3},{$pullAll:{fruits: [ 'pineapple','grapes' ]}});
-
-To update the documents having "banana" as an element in the the element
-
-"banana" from those documents.
-
-The "food" collection before the update is as follows:
-
+To update the documents having "banana" as an element in the the element "banana" from those documents.
 db.food.update({fruits:'banana'}, {$pull:{fruits:'banana'}})
 
-To pull out an array element based on index position.
-
-There is no direct way of pulling the array elements by looking up their index numbers.
-
-However a workaround is available. The document with "_id:4" in the food collection
-
-prior to the update is as follows:
-
 db.food.update({_id:4}, {$unset: {"fruits. 1": null }});
-
 db.food.update({_id:4}, {$pull: {"fruits": null}});
-
 db.Students.find().pretty().skip(2).limit(3);
 
-
-
-
-
-
-
-
-
-
-
-
-
 5.
-
 db.Customers.insert([{CustID:"C123",AccBal:500,AccType:"S"},
-
 {CustID:"C123", AccBal: 900, AccType:"S"},
-
 {CustID:"C111", AccBal: 1200, AccType:"S"},
-
 {CustID:"C123", AccBal: 1500, AccType:"C"}});
 
-
-
 db.Customers.find().pretty();
-
-
-
-db.Customers.aggregate({$group:{_id:"$CustID",TotAccBal:{$sum:"$AccBal"
-
-}}});
-
-
-
-
-
-db.Customers.aggregate( { $match: {AccType: "S" } },
-
-{$group: { _id: "$CustID",TotAccBal: { $sum : "$AccBal" } } });
-
-
-
-db.Customers.aggregate( { $match : {AccType : "S" } },
-
-{$group: { _id: "$CustID",TotAccBal: { $sum: "$AccBal" } } }, { $match:
-
-{TotAccBal : { $gt: 1200 } }});
-
-
-
-
-
-db.Customers.aggregate({ $group: { _id: "$CustID", TotAccBal : { $avg: "$AccBal" } }
-
-});
-
-
-
-db.Customers.aggregate({ $group: { _id: "$CustID", TotAccBal: { $max :
-
-"$AccBal" } } });
-
-
-
-db.Customers.aggregate({$group: { _id: "$CustID", TotAccBal: { $min :
-
-"$AccBal" } } });
-
-
-
+db.Customers.aggregate({$group:{_id:"$CustID",TotAccBal:{$sum:"$AccBal"}}});
+db.Customers.aggregate( { $match: {AccType: "S" } },{$group: { _id: "$CustID",TotAccBal: { $sum : "$AccBal" } } });
+db.Customers.aggregate( { $match : {AccType : "S" } },{$group: { _id: "$CustID",TotAccBal: { $sum: "$AccBal" } } }, { $match:{TotAccBal : { $gt: 1200 } }});
+db.Customers.aggregate({ $group: { _id: "$CustID", TotAccBal : { $avg: "$AccBal" } }});
+db.Customers.aggregate({ $group: { _id: "$CustID", TotAccBal: { $max :"$AccBal" } } });
+db.Customers.aggregate({$group: { _id: "$CustID", TotAccBal: { $min :"$AccBal" } } });
